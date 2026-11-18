@@ -29,18 +29,22 @@ Results are written to `results/metrics.csv` and `results/summary.csv`. To run o
 
 ## Results
 
-Run the notebook to fill this in.
+Test period: 2023-01-02 to 2024-12-31, 490 trading days, one-day-ahead forecasts. RMSE in INR (Reliance) and index points (NIFTY). "vs naive" = model MAE / naive MAE (below 1 beats naive).
 
-| Ticker | Model | MAPE % | RMSE | MASE | Direction % |
+| Ticker | Model | MAPE % | RMSE | vs naive | Direction % |
 | --- | --- | --- | --- | --- | --- |
-| RELIANCE.NS | naive | | | | |
-| RELIANCE.NS | ARIMA | | | | |
-| RELIANCE.NS | LSTM | | | | |
-| RELIANCE.NS | hybrid | | | | |
-| ^NSEI | naive | | | | |
-| ^NSEI | ARIMA | | | | |
-| ^NSEI | LSTM | | | | |
-| ^NSEI | hybrid | | | | |
+| RELIANCE.NS | naive | 0.929 | 16.87 | 1.000 | - |
+| RELIANCE.NS | ARIMA(0,1,2) | 0.931 | 16.84 | 1.002 | 49.0 |
+| RELIANCE.NS | LSTM | 0.930 | 16.87 | 1.001 | 50.6 |
+| RELIANCE.NS | hybrid | 0.931 | 16.86 | 1.001 | 50.2 |
+| ^NSEI | naive | 0.550 | 168.18 | 1.000 | - |
+| ^NSEI | ARIMA(0,1,0) | 0.550 | 168.18 | 1.000 | - |
+| ^NSEI | LSTM | 0.547 | 167.86 | 0.995 | 55.6 |
+| ^NSEI | hybrid | 0.547 | 167.86 | 0.995 | 55.6 |
+
+**Takeaway:** none of the models meaningfully beats the naive forecast. The hybrid's MAPE is 0.2% *higher* than naive for Reliance and 0.5% lower for NIFTY, differences far too small to matter. Directional accuracy is near a coin flip: about 50% for Reliance (50.8% of test days were up days) and 55.6% for NIFTY, below the 56.2% you'd get by always predicting "up". This is what weak-form market efficiency predicts for daily closing prices. AIC picked ARIMA(0,1,0) for NIFTY, i.e. a random walk.
+
+Other checks: ADF on training-period log price p = 0.88 (Reliance) and 0.94 (NIFTY), non-stationary; on log returns p < 1e-19, stationary. Full outputs are in the executed notebook and `results/`.
 
 ## Version history
 
